@@ -1,0 +1,65 @@
+#Crea liste di rifiuti dalla tastiera e li aggiunge alle 3 liste rifiuti, rifiuti1, rifiuti2
+
+import discord
+from discord.ext import commands
+import os, random
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+#Rifiuti di Plastica
+rifiuti =[]
+#Rifiuti di Carta
+rifiuti1 =[]
+#Rifiuti di indifferenziata
+rifiuti2 =[]
+
+
+@bot.event
+async def on_ready():
+    print(f'Hai fatto l\'accesso come {bot.user}')
+
+@bot.command()
+async def inserisci(ctx):
+    rifiuto = input('Inserisci il rifiuto:')
+    scelta = int(input('Dove vuoi aggiungere?'))
+    if scelta == 1:
+        rifiuti.append(rifiuto)
+    if scelta == 2:
+        rifiuti1.append(rifiuto)
+    if scelta == 3:
+        rifiuti2.append(rifiuto)
+@bot.command()
+async def visualizza(ctx):
+    print("Lista dei Rifiuti in Plastica :",rifiuti)
+    print("Lista dei Rifiuti in Carta :",rifiuti1)
+    print("Lista dei Rifiuti Indifferenziati :",rifiuti2)
+
+@bot.command()
+async def smaltisci(ctx,materiale: str):
+    for i in range(len(rifiuti)):
+        if materiale in rifiuti:
+            scelta = rifiuti[i]
+            with open(f'images/plastica.jpg', 'rb') as f:
+                picture = discord.File(f)
+    
+    for i in range(len(rifiuti1)):
+        if materiale in rifiuti1:
+            scelta = rifiuti1[i]
+            with open(f'images/carta.jpg', 'rb') as f:
+                picture = discord.File(f)  
+       
+    for i in range(len(rifiuti2)):
+        if materiale in rifiuti2:
+            scelta = rifiuti2[i]
+            with open(f'images/indifferenziata.jpg', 'rb') as f:
+                picture = discord.File(f)              
+
+#associa ad ogni rifiuto delle liste di fiuti una immagine che rappresenta il contenitore della differenziata
+    if materiale not in rifiuti and materiale not in rifiuti1 and materiale not in rifiuti2:
+            await ctx.send(f'Non ho info sullo smaltimento del materiale:{materiale}')    
+    
+    await ctx.send(file=picture)
+bot.run("token")
